@@ -31,7 +31,7 @@ screenGui.Parent = player:WaitForChild("PlayerGui")
 
 teleportButton.Name = "TeleportButton"
 teleportButton.Size = UDim2.new(0, 200, 0, 50)
-teleportButton.Position = UDim2.new(0.5, -100, 0.5, -25)
+teleportButton.Position = UDim2.new(1, -210, 0, 10) -- Top-right corner
 teleportButton.Text = "Teleport to All Players"
 teleportButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 teleportButton.Parent = screenGui
