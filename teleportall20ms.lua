@@ -3,22 +3,34 @@ local teleportDelay = 0.02 -- 20 milliseconds
 
 -- Function to teleport the player to all other players
 local function teleportToPlayers()
-    local players = game.Players:GetPlayers()
+	local players = game.Players:GetPlayers()
+	local playerIndex = 1
 
-    for _, targetPlayer in pairs(players) do
-        if targetPlayer ~= player then
-            local character = targetPlayer.Character
-            if character and character:FindFirstChild("HumanoidRootPart") then
-                local targetPosition = character.HumanoidRootPart.Position
-                
-                -- Teleporting the player's character
-                player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
-                
-                -- Wait for the delay
-                wait(teleportDelay)
-            end
-        end
-    end
+	local function teleportToNextPlayer()
+		while playerIndex <= #players do
+			local targetPlayer = players[playerIndex]
+			if targetPlayer ~= player then
+				local character = targetPlayer.Character
+				if character and character:FindFirstChild("HumanoidRootPart") then
+					local targetPosition = character.HumanoidRootPart.Position
+
+					-- Teleporting the player's character
+					player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+
+					-- Move to the next player
+					playerIndex = playerIndex + 1
+
+					-- Schedule the next teleport
+					delay(teleportDelay, teleportToNextPlayer)
+					return
+				end
+			end
+			playerIndex = playerIndex + 1
+		end
+	end
+
+	-- Start the teleportation process
+	teleportToNextPlayer()
 end
 
 -- GUI setup
