@@ -1,40 +1,40 @@
--- LocalScript inside StarterPlayerScripts
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
+local player = game.Players.LocalPlayer
 local teleportDelay = 0.02 -- 20 milliseconds
 
--- Function to teleport to each player
+-- Function to teleport the player to all other players
 local function teleportToPlayers()
-    for _, targetPlayer in pairs(Players:GetPlayers()) do
-        if targetPlayer ~= player then
-            local character = player.Character or player.CharacterAdded:Wait()
-            local targetCharacter = targetPlayer.Character or targetPlayer.CharacterAdded:Wait()
+    local players = game.Players:GetPlayers()
 
-            -- Wait for the character to be loaded
-            if character and targetCharacter then
-                -- Teleport to the target player
-                character:SetPrimaryPartCFrame(targetCharacter.PrimaryPart.CFrame)
+    for _, targetPlayer in pairs(players) do
+        if targetPlayer ~= player then
+            local character = targetPlayer.Character
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                local targetPosition = character.HumanoidRootPart.Position
                 
-                -- Wait for 20 milliseconds before the next teleport
+                -- Teleporting the player's character
+                player.Character.HumanoidRootPart.CFrame = CFrame.new(targetPosition)
+                
+                -- Wait for the delay
                 wait(teleportDelay)
             end
         end
     end
 end
 
--- Create GUI
-local ScreenGui = Instance.new("ScreenGui")
-local TeleportButton = Instance.new("TextButton")
+-- GUI setup
+local screenGui = Instance.new("ScreenGui")
+local teleportButton = Instance.new("TextButton")
 
-ScreenGui.Name = "TeleportGui"
-ScreenGui.Parent = player:WaitForChild("PlayerGui")
+-- Configure the GUI
+screenGui.Name = "TeleportGui"
+screenGui.Parent = player:WaitForChild("PlayerGui")
 
-TeleportButton.Name = "TeleportButton"
-TeleportButton.Size = UDim2.new(0, 200, 0, 50)
-TeleportButton.Position = UDim2.new(0.5, -100, 0.5, -25)
-TeleportButton.Text = "Teleport to Players"
-TeleportButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
-TeleportButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-TeleportButton.Parent = ScreenGui
+teleportButton.Name = "TeleportButton"
+teleportButton.Size = UDim2.new(0, 200, 0, 50)
+teleportButton.Position = UDim2.new(0.5, -100, 0.5, -25)
+teleportButton.Text = "Teleport to All Players"
+teleportButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+teleportButton.Parent = screenGui
 
-TeleportButton.MouseButton1Click:Connect(teleportToPlayers)
+-- Connect the button click to the teleport function
+teleportButton.MouseButton1Click:Connect(teleportToPlayers)
